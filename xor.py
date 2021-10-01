@@ -28,5 +28,5 @@ with open('main.go','w') as f:
 os.system('GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o xor.exe')
 os.system('./go-strip -f xor.exe -a -output shell.exe')
 os.system("strip shell.exe")
-#os.remove('main.go')
+os.remove('main.go')
 os.remove('xor.exe')
