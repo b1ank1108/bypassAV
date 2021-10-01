@@ -6,12 +6,16 @@ def xor(buf,key):
     shellcode = []
     length = len(key)
     for i in range(len(buf)):
-        shellcode.append(buf[i]^ord(key[i%length]))
+        if i%2 == 0: 
+            buf[i] = buf[i]^ord(key[i%length])
+        else:
+            buf[i] = buf[i]^ord(key[(i+1)%length])
+        shellcode.append(buf[i])
     return shellcode
 
 buf = []
 
-key = "".join(random.sample(string.ascii_lowercase,10))
+key = "".join(random.sample(string.ascii_letters,10))
 shellcode = str(xor(buf,key))[1:-1]
 
 

