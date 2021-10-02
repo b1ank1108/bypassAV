@@ -6,10 +6,7 @@ def xor(buf,key):
     shellcode = []
     length = len(key)
     for i in range(len(buf)):
-        if i%2 == 0: 
-            buf[i] = buf[i]^ord(key[i%length])
-        else:
-            buf[i] = buf[i]^ord(key[(i+1)%length])
+        buf[i] = buf[i]^ord(key[i%length])
         shellcode.append(buf[i])
     return shellcode
 
